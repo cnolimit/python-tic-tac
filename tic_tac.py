@@ -137,7 +137,6 @@ def rematch():
     decided = False
     while not decided:
         decision = input()
-
         if decision.lower() == 'y':
             reset()
             player_one_turn = True
