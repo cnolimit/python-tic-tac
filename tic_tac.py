@@ -8,59 +8,65 @@ win_paths = {'789', '456', '123', '963', '852', '741', '951', '753'}
 
 players = {'1': 'X', '2': 'O'}
 
-winner_found = False
+found_winner = False
 
 player_one_turn = True
 
 
 def start_game():
-    global winner_found
+    global found_winner
     global player_one_turn
     welcome_message()
 
-    while not winner_found:
+    while not found_winner:
         print("")
         print(f"Player {'1' if player_one_turn else '2'}")
         print("Select a number from 0 - 9")
         print("h = Help board | b = Game board | e = End game")
         print("")
-        move = input()
+        player_move = input()
 
-        if move.lower() == 'h':
+        if player_move.lower() == 'h':
             print_game_board(help_game_board)
             continue
 
-        if move.lower() == 'b':
+        if player_move.lower() == 'b':
             print_game_board(in_game_board)
             continue
 
-        if move.lower() == 'e':
+        if player_move.lower() == 'e':
             exit()
 
-        if len(''.join(re.findall('\d', move))) > 1:
+        if len(''.join(re.findall('\d', player_move))) > 1:
             print("")
             print("Please only enter a number from 0 - 9")
             continue
 
-        if move in ''.join([str(x) for x in range(0, 10)]):
-            if in_game_board[move] != '':
-                print(f'pos {move} has already been selected!')
+        if player_move in ''.join([str(x) for x in range(0, 10)]):
+            if check_board(player_move):
                 continue
             update_board(
-                players['1'] if player_one_turn else players['2'], move)
+                players['1'] if player_one_turn else players['2'], player_move)
             print_game_board(in_game_board)
-            winner_found = check_for_winner()
+            found_winner = check_for_winner()
             player_one_turn = not player_one_turn
         else:
             print("Sorry that was invalid, please try again..")
 
-        if winner_found:
+        if found_winner:
             rematch()
 
 
 def reset():
     for pos in in_game_board:
         in_game_board[pos] = ''
+
+
+def check_board(player_move):
+    if in_game_board[player_move] != '':
+        print(f'pos {player_move} has already been selected!')
+        return True
+    return False
 
 
 def update_board(player, pos):
@@ -124,7 +130,7 @@ def welcome_message():
 
 
 def rematch():
-    global winner_found
+    global found_winner
     global player_one_turn
     print("")
     print("Rematch? y/n")
@@ -135,7 +141,7 @@ def rematch():
         if decision.lower() == 'y':
             reset()
             player_one_turn = True
-            winner_found = False
+            found_winner = False
             decided = True
         elif decision.lower() == 'n':
             decided = True
